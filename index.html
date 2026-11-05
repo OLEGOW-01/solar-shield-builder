@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор щитів AC/DC для СЕС</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        dc: {
+                            light: '#fef2f2',
+                            border: '#fca5a5',
+                            text: '#991b1b',
+                            accent: '#ef4444'
+                        },
+                        ac: {
+                            light: '#eff6ff',
+                            border: '#93c5fd',
+                            text: '#1e40af',
+                            accent: '#3b82f6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .din-rail {
+            background: linear-gradient(180deg, #94a3b8 0%, #cbd5e1 30%, #e2e8f0 50%, #cbd5e1 70%, #64748b 100%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .din-rail-slot {
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 17px, rgba(148, 163, 184, 0.4) 17px, rgba(148, 163, 184, 0.4) 18px);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+            .print-card { border: 1px solid #ccc; box-shadow: none; }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden bg-slate-950">
+
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-3 flex items-center justify-between no-print shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-amber-500 to-sky-500 p-2 rounded-xl shadow-lg">
+                <i class="fa-solid font-bold fa-bolt text-slate-950 text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                    SolarShield AC/DC CAD 
+                    <span class="text-xs bg-sky-500/10 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-full font-mono">v1.0 PV-BESS</span>
+                </h1>
+                <p class="text-xs text-slate-400">Професійний компонувальник електричних щитів для СЕС</p>
+            </div>
+        </div>
+        
+        <!-- Top Toolbar Controls -->
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700 text-xs">
+                <span class="px-2 text-slate-400">Рейок:</span>
+                <button onclick="setRailsCount(1)" id="btn-rails-1" class="px-2 py-1 rounded font-mono text-slate-300 hover:bg-slate-700">1</button>
+                <button onclick="setRailsCount(2)" id="btn-rails-2" class="px-2 py-1 rounded font-mono bg-sky-600 text-white font-semibold">2</button>
+                <button onclick="setRailsCount(3)" id="btn-rails-3" class="px-2 py-1 rounded font-mono text-slate-300 hover:bg-slate-700">3</button>
+                <button onclick="setRailsCount(4)" id="btn-rails-4" class="px-2 py-1 rounded font-mono text-slate-300 hover:bg-slate-700">4</button>
+            </div>
+
+            <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700 text-xs">
+                <span class="px-2 text-slate-400">Модулів на рейку:</span>
+                <select id="select-rail-modules" onchange="setRailCapacity(this.value)" class="bg-slate-900 text-slate-200 rounded px-2 py-1 border border-slate-700 focus:outline-none">
+                    <option value="12">12 DIN (12 TE)</option>
+                    <option value="18" selected>18 DIN (18 TE)</option>
+                    <option value="24">24 DIN (24 TE)</option>
+                </select>
+            </div>
+
+            <button onclick="clearEnclosure()" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+                <i class="fa-solid fa-trash-can"></i> Очистити
+            </button>
+            
+            <button onclick="exportBOM()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-medium shadow-md transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file-export"></i> Експорт специфікації
+            </button>
+
+            <button onclick="window.print()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-medium transition flex items-center gap-1.5">
+                <i class="fa-solid fa-print"></i> Друк
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- Left Component Library Sidebar -->
+        <aside class="w-80 bg-slate-900 border-r border-slate-800 flex flex-col no-print shrink-0">
+            <!-- Library Header Tabs -->
+            <div class="p-3 border-b border-slate-800 bg-slate-950/50">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                    <input type="text" id="component-search" onkeyup="filterComponents()" placeholder="Пошук автомата, ПЗІП, лічильника..." 
+                           class="w-full bg-slate-900 text-xs text-slate-200 pl-8 pr-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-sky-500">
+                </div>
+                <!-- Filter Tabs -->
+                <div class="flex mt-2 bg-slate-950 p-1 rounded-lg gap-1 border border-slate-800">
+                    <button onclick="switchTab('all')" id="tab-all" class="flex-1 py-1 text-[11px] font-medium rounded text-sky-400 bg-slate-800">Всі</button>
+                    <button onclick="switchTab('dc')" id="tab-dc" class="flex-1 py-1 text-[11px] font-medium rounded text-rose-400 hover:bg-slate-800">DC (Постійний)</button>
+                    <button onclick="switchTab('ac')" id="tab-ac" class="flex-1 py-1 text-[11px] font-medium rounded text-blue-400 hover:bg-slate-800">AC (Змінний)</button>
+                </div>
+            </div>
+
+            <!-- Components List Scrollable -->
+            <div id="components-container" class="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
+                <!-- Components rendered dynamically via JS -->
+            </div>
+            
+            <div class="p-3 border-t border-slate-800 bg-slate-950/40 text-[11px] text-slate-500 flex justify-between">
+                <span>1 Модуль DIN = 18мм</span>
+                <span>Натисніть "+ Додати" або перетягніть</span>
+            </div>
+        </aside>
+
+        <!-- Center Workspace: Visual Enclosure Designer -->
+        <main class="flex-1 bg-slate-950 p-6 flex flex-col overflow-y-auto custom-scrollbar">
+            
+            <div class="max-w-5xl w-full mx-auto space-y-6">
+                <!-- Enclosure Info Bar -->
+                <div class="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-200">Параметри шафи / щита</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Загальна місткість: <span id="total-capacity-display" class="font-mono text-sky-400 font-bold">36</span> модулів DIN (18 мм)</p>
+                    </div>
+                    <div class="flex gap-4 text-xs font-mono">
+                        <div class="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+                            <span class="text-slate-500">Зайнято:</span> 
+                            <span id="used-modules-display" class="text-amber-400 font-bold">0</span> / <span id="total-modules-display" class="text-slate-300">36</span> TE
+                        </div>
+                        <div class="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+                            <span class="text-slate-500">Вільний резерв:</span> 
+                            <span id="free-modules-display" class="text-emerald-400 font-bold">36</span> TE
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive DIN Rails Box -->
+                <div class="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-8 relative">
+                    <!-- Cabinet Frame Header visual -->
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                            <span class="text-xs font-mono text-slate-400 ml-2">МОНТАЖНА ПАНЕЛЬ DIN-РЕЙОК</span>
+                        </div>
+                        <div class="text-[11px] font-mono text-slate-500">IP65 / СЕС Компоновка</div>
+                    </div>
+
+                    <!-- DIN Rails Container -->
+                    <div id="rails-container" class="space-y-8">
+                        <!-- Rails will be dynamically created here -->
+                    </div>
+                </div>
+
+                <!-- Bill of Materials (BOM) Section -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h3 class="text-sm font-semibold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-sky-400"></i> Специфікація обладнання (BOM)
+                        </h3>
+                        <span id="bom-count-tag" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-mono">0 позицій</span>
+                    </div>
+
+                    <!-- BOM Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-950 text-slate-400 font-mono uppercase text-[10px] border-b border-slate-800">
+                                <tr>
+                                    <th class="py-2.5 px-3">Тип</th>
+                                    <th class="py-2.5 px-3">Найменування обладнання</th>
+                                    <th class="py-2.5 px-3">Бренд / Модель</th>
+                                    <th class="py-2.5 px-3">Модулів (TE)</th>
+                                    <th class="py-2.5 px-3 text-center">Кількість</th>
+                                    <th class="py-2.5 px-3 text-right">Всього модулів</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bom-table-body" class="divide-y divide-slate-800 font-sans">
+                                <tr>
+                                    <td colspan="6" class="py-6 text-center text-slate-500 italic">Щит порожній. Додайте компоненти з лівої панелі.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-800 text-slate-100 border border-slate-700 px-4 py-3 rounded-xl shadow-xl flex items-center space-x-3 transition-opacity opacity-0 pointer-events-none z-50">
+        <i id="toast-icon" class="fa-solid fa-circle-info text-sky-400"></i>
+        <span id="toast-message" class="text-xs font-medium">Повідомлення</span>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Data Store: Library of AC & DC Solar Components
+        const COMPONENT_LIBRARY = [
+            // DC Components
+            { id: 'dc_fuse_1p', type: 'dc', name: 'Запобіжник DC (1P Holder 10x38)', brand: 'ETI / YRO', modules: 1, specs: '1000V DC / 15A-30A gPV', color: 'bg-rose-950/40 border-rose-600/50 text-rose-300', tag: 'DC Fuse' },
+            { id: 'dc_fuse_2p', type: 'dc', name: 'Тримач запобіжників DC 2P', brand: 'YRO Electric', modules: 2, specs: '1000V DC / 2P 10x38', color: 'bg-rose-950/40 border-rose-600/50 text-rose-300', tag: 'DC Fuse 2P' },
+            { id: 'dc_spd_2p', type: 'dc', name: 'ПЗІП DC Type II (2P T2)', brand: 'CHINT / ETI', modules: 2, specs: '1000V DC Uc, In 20kA', color: 'bg-rose-900/40 border-rose-500 text-rose-200', tag: 'SPD DC T2' },
+            { id: 'dc_spd_3p', type: 'dc', name: 'ПЗІП DC Type I+II (3P T1+T2)', brand: 'VCX / ETI', modules: 3, specs: '1000V/1500V DC Iimp 6.25kA', color: 'bg-rose-900/50 border-rose-500 text-rose-100', tag: 'SPD DC T1+T2' },
+            { id: 'dc_mcb_2p', type: 'dc', name: 'Автоматичний вимикач DC 2P', brand: 'CHINT NXB-63DC', modules: 2, specs: '500V DC / 16A-32A C', color: 'bg-rose-950/40 border-rose-600/50 text-rose-300', tag: 'DC MCB' },
+            { id: 'dc_switch_4p', type: 'dc', name: 'Рубильник / Вимикач навантаження DC 4P', brand: 'S 선/ BENY', modules: 4, specs: '1000V DC / 32A-63A Rotational', color: 'bg-red-950/60 border-red-500 text-red-200', tag: 'DC Isolator' },
+
+            // AC Components
+            { id: 'ac_mcb_1p', type: 'ac', name: 'Автоматичний вимикач AC 1P', brand: 'CHINT / Schneider', modules: 1, specs: '230V AC / 16A-32A Curve C', color: 'bg-sky-950/40 border-sky-600/50 text-sky-300', tag: 'MCB 1P' },
+            { id: 'ac_mcb_3p', type: 'ac', name: 'Автоматичний вимикач AC 3P', brand: 'CHINT NXB-63', modules: 3, specs: '400V AC / 25A-63A Curve C', color: 'bg-sky-950/40 border-sky-600/50 text-sky-300', tag: 'MCB 3P' },
+            { id: 'ac_rcbo_2p', type: 'ac', name: 'Диф-автомат (АВДТ / RCBO) 2P', brand: 'CHINT / ETI', modules: 2, specs: '230V / 30mA Type A/AC', color: 'bg-blue-950/50 border-blue-500 text-blue-200', tag: 'RCBO 2P' },
+            { id: 'ac_spd_4p', type: 'ac', name: 'ПЗІП AC 4P (T1+T2 / T2)', brand: 'VCX / CHINT', modules: 4, specs: '400V AC / 4P (3P+N)', color: 'bg-blue-900/40 border-blue-500 text-blue-100', tag: 'SPD AC 4P' },
+            { id: 'ac_meter_smart', type: 'ac', name: 'Смарт-лічильник 3Ф зі трансформаторами', brand: 'CHINT DTSU666', modules: 4, specs: 'RS485 Modbus / СЕС Інвертор', color: 'bg-indigo-950/50 border-indigo-500 text-indigo-200', tag: 'Smart Meter' },
+            { id: 'ac_relay_voltage', type: 'ac', name: 'Реле напруги 3-фазне', brand: 'ZUBR / Adecs', modules: 3, specs: 'Контроль Phase/Zero + Захист', color: 'bg-slate-800 border-sky-500 text-slate-200', tag: 'Relay V' },
+            { id: 'ac_contactor', type: 'ac', name: 'Контактор АВР / Перемикач 4P', brand: 'Hager / CHINT', modules: 4, specs: '400V AC / 40A-63A NO/NC', color: 'bg-slate-800 border-indigo-600 text-slate-200', tag: 'Contactor' },
+            { id: 'terminals_block', type: 'ac', name: 'Розподільчий блок (Крос-модуль)', brand: 'ETI / Weidmuller', modules: 2, specs: 'DIN-рейка / 125A 4-полюси', color: 'bg-amber-950/30 border-amber-600/40 text-amber-300', tag: 'Busbar' }
+        ];
+
+        // Application State
+        let state = {
+            railsCount: 2,
+            railCapacity: 18, // TE (modules) per rail
+            railsData: {} // e.g. { rail_1: [ { instanceId, componentId, ... } ] }
+        };
+
+        // Initialize state for rails
+        function initRailsState() {
+            for (let i = 1; i <= 4; i++) {
+                if (!state.railsData[`rail_${i}`]) {
+                    state.railsData[`rail_${i}`] = [];
+                }
+            }
+        }
+
+        // Window Load Setup
+        window.onload = function() {
+            initRailsState();
+            renderComponentLibrary(COMPONENT_LIBRARY);
+            renderRails();
+            updateStatsAndBOM();
+        };
+
+        // Render Sidebar Components
+        function renderComponentLibrary(items) {
+            const container = document.getElementById('components-container');
+            container.innerHTML = '';
+
+            if (items.length === 0) {
+                container.innerHTML = `<div class="text-center text-xs text-slate-500 py-8">Нічого не знайдено</div>`;
+                return;
+            }
+
+            items.forEach(comp => {
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl border ${comp.type === 'dc' ? 'bg-slate-900 border-rose-900/40 hover:border-rose-500/60' : 'bg-slate-900 border-sky-900/40 hover:border-sky-500/60'} transition shadow-sm hover:shadow-md cursor-grab flex flex-col gap-1.5 group`;
+                card.draggable = true;
+                card.ondragstart = (e) => handleDragStart(e, comp.id);
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded ${comp.type === 'dc' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'}">
+                            ${comp.type.toUpperCase()} • ${comp.modules} TE (${comp.modules * 18}мм)
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-mono">${comp.brand}</span>
+                    </div>
+                    <div class="font-medium text-xs text-slate-100 leading-snug group-hover:text-sky-300 transition-colors">
+                        ${comp.name}
+                    </div>
+                    <div class="text-[11px] text-slate-400 font-mono flex items-center justify-between pt-1 border-t border-slate-800">
+                        <span>${comp.specs}</span>
+                        <button onclick="quickAddComponent('${comp.id}')" title="Додати на вільну рейку" class="p-1 hover:bg-slate-800 rounded text-slate-300 hover:text-emerald-400">
+                            <i class="fa-solid fa-circle-plus text-sm"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Filter components by search and tab
+        let currentTab = 'all';
+        function switchTab(tab) {
+            currentTab = tab;
+            ['all', 'dc', 'ac'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if (t === tab) {
+                    btn.className = "flex-1 py-1 text-[11px] font-medium rounded text-sky-400 bg-slate-800";
+                } else {
+                    btn.className = "flex-1 py-1 text-[11px] font-medium rounded text-slate-400 hover:bg-slate-800";
+                }
+            });
+            filterComponents();
+        }
+
+        function filterComponents() {
+            const query = document.getElementById('component-search').value.toLowerCase();
+            const filtered = COMPONENT_LIBRARY.filter(item => {
+                const matchesTab = (currentTab === 'all') || (item.type === currentTab);
+                const matchesQuery = item.name.toLowerCase().includes(query) || 
+                                     item.brand.toLowerCase().includes(query) || 
+                                     item.specs.toLowerCase().includes(query);
+                return matchesTab && matchesQuery;
+            });
+            renderComponentLibrary(filtered);
+        }
+
+        // Render DIN Rails UI
+        function renderRails() {
+            const container = document.getElementById('rails-container');
+            container.innerHTML = '';
+
+            for (let r = 1; r <= state.railsCount; r++) {
+                const railId = `rail_${r}`;
+                const railItems = state.railsData[railId] || [];
+                
+                // Calculate used width in modules
+                const usedModules = railItems.reduce((acc, item) => acc + item.modules, 0);
+                const freeModules = state.railCapacity - usedModules;
+                const percent = Math.min(100, Math.round((usedModules / state.railCapacity) * 100));
+
+                const railWrapper = document.createElement('div');
+                railWrapper.className = "space-y-2";
+                
+                railWrapper.innerHTML = `
+                    <div class="flex items-center justify-between text-xs px-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono font-bold text-slate-300">DIN REIL #${r}</span>
+                            <span class="text-[11px] text-slate-500 font-mono">(${usedModules} / ${state.railCapacity} TE зайнято)</span>
+                        </div>
+                        <!-- Progress bar -->
+                        <div class="w-48 bg-slate-950 rounded-full h-2 overflow-hidden border border-slate-800 flex">
+                            <div class="h-full ${percent > 100 ? 'bg-rose-500' : 'bg-sky-500'} transition-all duration-300" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+
+                    <!-- DIN Rail Visual Area -->
+                    <div class="relative din-rail h-28 rounded-xl flex items-center px-4 border border-slate-700/60 din-rail-slot"
+                         ondragover="handleDragOver(event)"
+                         ondrop="handleDrop(event, '${railId}')">
+                        
+                        <!-- Metal Rail Ridge in background -->
+                        <div class="absolute inset-x-0 h-8 bg-gradient-to-r from-slate-400 via-slate-200 to-slate-400 border-y border-slate-500 shadow-inner top-1/2 -translate-y-1/2 pointer-events-none opacity-80"></div>
+
+                        <!-- Mounted Components Flex Container -->
+                        <div class="relative z-10 flex items-center gap-1.5 h-full py-2 w-full overflow-x-auto custom-scrollbar" id="${railId}-items">
+                            <!-- Modules appended here -->
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(railWrapper);
+
+                // Populate items inside rail
+                const itemsContainer = railWrapper.querySelector(`#${railId}-items`);
+                
+                if (railItems.length === 0) {
+                    itemsContainer.innerHTML = `
+                        <div class="w-full text-center text-slate-500 text-xs italic pointer-events-none">
+                            Перетягніть автомати або натисніть "+", щоб розмістити на цій рейці
+                        </div>
+                    `;
+                } else {
+                    railItems.forEach((item, index) => {
+                        const moduleEl = document.createElement('div');
+                        // Calculate relative visual width based on module count (1 TE ~ 45px baseline)
+                        const widthPx = item.modules * 46; 
+                        
+                        moduleEl.className = `relative h-full ${item.color} border-2 rounded-lg p-2 flex flex-col justify-between shadow-lg select-none group transition-transform hover:-translate-y-0.5 shrink-0`;
+                        moduleEl.style.width = `${widthPx}px`;
+
+                        moduleEl.innerHTML = `
+                            <!-- Remove Item Button -->
+                            <button onclick="removeItem('${railId}', '${item.instanceId}')" 
+                                    class="absolute -top-2 -right-2 w-5 h-5 bg-rose-600 hover:bg-rose-500 text-white rounded-full text-[10px] items-center justify-center hidden group-hover:flex shadow-md z-20">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+
+                            <!-- Top specs -->
+                            <div class="flex justify-between items-center text-[9px] font-mono leading-none border-b border-white/10 pb-1">
+                                <span class="font-bold opacity-80">${item.tag}</span>
+                                <span>${item.modules}TE</span>
+                            </div>
+
+                            <!-- Component Center Visual representation -->
+                            <div class="text-center my-auto px-0.5">
+                                <div class="text-[10px] font-bold leading-tight truncate" title="${item.name}">${item.name}</div>
+                                <div class="text-[8px] opacity-75 font-mono truncate mt-0.5">${item.brand}</div>
+                            </div>
+
+                            <!-- Bottom Terminal Simulation lines -->
+                            <div class="flex justify-around items-center border-t border-white/10 pt-1">
+                                ${Array(item.modules).fill(0).map(() => `<div class="w-2 h-2 rounded-full bg-slate-950/60 border border-slate-700"></div>`).join('')}
+                            </div>
+                        `;
+
+                        itemsContainer.appendChild(moduleEl);
+                    });
+                }
+            }
+        }
+
+        // Drag & Drop Handlers
+        let draggedComponentId = null;
+
+        function handleDragStart(e, compId) {
+            draggedComponentId = compId;
+            e.dataTransfer.setData('text/plain', compId);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        }
+
+        function handleDrop(e, railId) {
+            e.preventDefault();
+            if (!draggedComponentId) return;
+            addComponentToRail(draggedComponentId, railId);
+            draggedComponentId = null;
+        }
+
+        // Core Business Logic: Adding component to a rail
+        function addComponentToRail(compId, railId) {
+            const template = COMPONENT_LIBRARY.find(c => c.id === compId);
+            if (!template) return;
+
+            const currentRailItems = state.railsData[railId] || [];
+            const usedModules = currentRailItems.reduce((acc, item) => acc + item.modules, 0);
+
+            // Check capacity limit
+            if (usedModules + template.modules > state.railCapacity) {
+                showToast(`Недостатньо місця на DIN-рейці! Потрібно ${template.modules} TE, вільно ${state.railCapacity - usedModules} TE`, 'warning');
+                return;
+            }
+
+            // Create new instance item
+            const newItem = {
+                ...template,
+                instanceId: 'inst_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4)
+            };
+
+            state.railsData[railId].push(newItem);
+            renderRails();
+            updateStatsAndBOM();
+            showToast(`Додано: ${template.name}`, 'success');
+        }
+
+        // Quick add to first available rail
+        function quickAddComponent(compId) {
+            const template = COMPONENT_LIBRARY.find(c => c.id === compId);
+            if (!template) return;
+
+            for (let r = 1; r <= state.railsCount; r++) {
+                const railId = `rail_${r}`;
+                const used = state.railsData[railId].reduce((acc, i) => acc + i.modules, 0);
+                if (used + template.modules <= state.railCapacity) {
+                    addComponentToRail(compId, railId);
+                    return;
+                }
+            }
+
+            showToast('На жодній з доступних DIN-рейок немає достатньо вільного місця!', 'warning');
+        }
+
+        // Remove item from rail
+        function removeItem(railId, instanceId) {
+            state.railsData[railId] = state.railsData[railId].filter(i => i.instanceId !== instanceId);
+            renderRails();
+            updateStatsAndBOM();
+            showToast('Компонент видалено', 'info');
+        }
+
+        // Clear whole enclosure
+        function clearEnclosure() {
+            for (let r = 1; r <= 4; r++) {
+                state.railsData[`rail_${r}`] = [];
+            }
+            renderRails();
+            updateStatsAndBOM();
+            showToast('Компоновку очищено', 'info');
+        }
+
+        // Set Rails Count (1-4)
+        function setRailsCount(count) {
+            state.railsCount = count;
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`btn-rails-${i}`);
+                if (i === count) {
+                    btn.className = "px-2 py-1 rounded font-mono bg-sky-600 text-white font-semibold";
+                } else {
+                    btn.className = "px-2 py-1 rounded font-mono text-slate-300 hover:bg-slate-700";
+                }
+            }
+            renderRails();
+            updateStatsAndBOM();
+        }
+
+        // Change rail capacity
+        function setRailCapacity(val) {
+            state.railCapacity = parseInt(val, 10);
+            renderRails();
+            updateStatsAndBOM();
+        }
+
+        // Recalculate statistics & build Bill of Materials (BOM)
+        function updateStatsAndBOM() {
+            let totalCapacity = state.railsCount * state.railCapacity;
+            let usedModulesTotal = 0;
+            let allMountedItems = [];
+
+            for (let r = 1; r <= state.railsCount; r++) {
+                const items = state.railsData[`rail_${r}`] || [];
+                items.forEach(item => {
+                    usedModulesTotal += item.modules;
+                    allMountedItems.push(item);
+                });
+            }
+
+            let freeModulesTotal = totalCapacity - usedModulesTotal;
+
+            // Update Header Stats
+            document.getElementById('total-capacity-display').innerText = totalCapacity;
+            document.getElementById('total-modules-display').innerText = totalCapacity;
+            document.getElementById('used-modules-display').innerText = usedModulesTotal;
+            document.getElementById('free-modules-display').innerText = Math.max(0, freeModulesTotal);
+
+            // Group items for BOM Table (Aggregation)
+            const bomGrouped = {};
+            allMountedItems.forEach(item => {
+                if (!bomGrouped[item.id]) {
+                    bomGrouped[item.id] = {
+                        ...item,
+                        count: 0,
+                        totalModules: 0
+                    };
+                }
+                bomGrouped[item.id].count += 1;
+                bomGrouped[item.id].totalModules += item.modules;
+            });
+
+            // Render BOM Table
+            const tbody = document.getElementById('bom-table-body');
+            tbody.innerHTML = '';
+
+            const keys = Object.keys(bomGrouped);
+            document.getElementById('bom-count-tag').innerText = `${keys.length} найменувань`;
+
+            if (keys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500 italic">Щит порожній. Додайте компоненти з лівої панелі.</td></tr>`;
+                return;
+            }
+
+            keys.forEach(key => {
+                const entry = bomGrouped[key];
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/40 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 font-mono">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${entry.type === 'dc' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'}">
+                            ${entry.type.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="py-2.5 px-3 font-medium text-slate-100">${entry.name}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-400">${entry.brand}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-400">${entry.modules} TE</td>
+                    <td class="py-2.5 px-3 text-center font-mono font-bold text-sky-400">${entry.count} шт.</td>
+                    <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-200">${entry.totalModules} TE</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // CSV Export Functionality
+        function exportBOM() {
+            let allMountedItems = [];
+            for (let r = 1; r <= state.railsCount; r++) {
+                const items = state.railsData[`rail_${r}`] || [];
+                allMountedItems.push(...items);
+            }
+
+            if (allMountedItems.length === 0) {
+                showToast('Специфікація порожня! Додайте хоча б один автомат.', 'warning');
+                return;
+            }
+
+            const bomGrouped = {};
+            allMountedItems.forEach(item => {
+                if (!bomGrouped[item.id]) {
+                    bomGrouped[item.id] = { ...item, count: 0, totalModules: 0 };
+                }
+                bomGrouped[item.id].count += 1;
+                bomGrouped[item.id].totalModules += item.modules;
+            });
+
+            let csvContent = "data:text/csv;charset=utf-8,Тип,Найменування,Бренд,Модулів TE,Кількість,Всього TE\n";
+            Object.values(bomGrouped).forEach(row => {
+                csvContent += `"${row.type.toUpperCase()}","${row.name}","${row.brand}",${row.modules},${row.count},${row.totalModules}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `BOM_Solar_Shield_${Date.now()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('Специфікацію завантажено у CSV', 'success');
+        }
+
+        // Toast Messages Helper
+        function showToast(msg, type = 'info') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const message = document.getElementById('toast-message');
+
+            message.innerText = msg;
+
+            if (type === 'warning') {
+                icon.className = "fa-solid fa-triangle-exclamation text-amber-400";
+            } else if (type === 'success') {
+                icon.className = "fa-solid fa-circle-check text-emerald-400";
+            } else {
+                icon.className = "fa-solid fa-circle-info text-sky-400";
+            }
+
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
