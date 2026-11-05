@@ -9,75 +9,72 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Стилізація реалістичної DIN-рейки */
-        .din-rail-bg {
-            background: linear-gradient(180deg, #b0b0b0 0%, #e0e0e0 20%, #d0d0d0 50%, #adadad 80%, #888888 100%);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
-            border-top: 2px solid #777;
-            border-bottom: 2px solid #666;
+        /* Фон з точечною сіткою (Dot Grid) як у Figma/CAD */
+        .dot-grid-bg {
+            background-color: #f1f5f9;
+            background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
         }
 
-        /* Текстура та об'єм модульних пристроїв */
+        /* Реалістична металева DIN-рейка з перфораціями */
+        .din-rail-perforated {
+            background: linear-gradient(180deg, #d1d5db 0%, #ffffff 25%, #e5e7eb 50%, #9ca3af 75%, #6b7280 100%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 3px 6px rgba(0,0,0,0.15);
+            border-top: 1px solid #9ca3af;
+            border-bottom: 1px solid #4b5563;
+        }
+
+        .din-slot {
+            width: 32px;
+            height: 10px;
+            background: linear-gradient(180deg, #4b5563 0%, #1f2937 100%);
+            border-radius: 6px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 1px rgba(255,255,255,0.5);
+        }
+
+        /* Корпус автомата */
         .device-body {
-            background: linear-gradient(180deg, #ffffff 0%, #f4f5f7 70%, #e2e4e8 100%);
-            box-shadow: -2px 0 5px rgba(0,0,0,0.15), 2px 0 5px rgba(0,0,0,0.15), 0 8px 15px rgba(0,0,0,0.25);
-            border: 1px solid #c0c4cc;
-            position: relative;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 60%, #e5e7eb 100%);
+            box-shadow: -2px 0 4px rgba(0,0,0,0.1), 2px 0 4px rgba(0,0,0,0.1), 0 6px 12px rgba(0,0,0,0.15);
+            border: 1px solid #d1d5db;
+            transition: all 0.15s ease;
         }
         
         .device-body.selected {
             border: 2px solid #2563eb !important;
-            box-shadow: 0 0 12px rgba(37, 99, 235, 0.6), 0 8px 15px rgba(0,0,0,0.25) !important;
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5), 0 6px 12px rgba(0,0,0,0.2) !important;
             transform: translateY(-2px);
         }
 
-        /* Реалістичні тумблери (важелі) */
-        .toggle-switch-on {
-            background: linear-gradient(180deg, #dc2626 0%, #991b1b 100%);
-            box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 3px 6px rgba(0,0,0,0.4);
-            transform: translateY(-3px);
-        }
-
-        .toggle-switch-off {
-            background: linear-gradient(180deg, #4b5563 0%, #1f2937 100%);
-            box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.4);
-            transform: translateY(3px);
-        }
-
-        /* Металевий затискач DIN-рейки внизу */
-        .din-clip {
-            background: linear-gradient(180deg, #9ca3af 0%, #4b5563 100%);
-            border-radius: 0 0 2px 2px;
+        /* Оранжево-червоні картриджі ПЗІП (SPD) */
+        .spd-cartridge {
+            background: linear-gradient(180deg, #ef4444 0%, #dc2626 70%, #b91c1c 100%);
+            border: 1px solid #991b1b;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.3), 0 2px 4px rgba(0,0,0,0.2);
         }
 
         /* Гвинтові клеми */
-        .terminal-screw {
-            background: radial-gradient(circle, #d1d5db 30%, #4b5563 90%);
-            border: 1px solid #374151;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+        .screw-terminal {
+            background: radial-gradient(circle, #e5e7eb 25%, #6b7280 80%, #374151 100%);
+            border: 1px solid #4b5563;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.7);
         }
 
-        /* Кастомний скролбар */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        /* Об'єднувальна планка тумблерів */
+        .toggle-bridge {
+            background: linear-gradient(180deg, #374151 0%, #111827 100%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+
+        /* Скролбар */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Верхній шапка / Панель інструментів -->
+    <!-- Шапка -->
     <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
@@ -86,25 +83,24 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight">Конструктор Щитів СЕС</h1>
-                    <p class="text-xs text-slate-400">Професійне проектування AC / DC щитів</p>
+                    <p class="text-xs text-slate-400">Графічне проектування AC / DC щитів</p>
                 </div>
             </div>
 
-            <!-- Швидкі налаштування щита -->
             <div class="flex items-center space-x-4 text-sm">
                 <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
                     <label class="text-slate-400 text-xs font-medium">Кількість рейок:</label>
-                    <select id="railCountSelect" onchange="updateShieldConfig()" class="bg-slate-900 text-white font-semibold rounded px-2 py-0.5 border border-slate-600 focus:outline-none focus:border-amber-500">
-                        <option value="1">1 DIN (12-24 мод)</option>
-                        <option value="2" selected>2 DIN (24-48 мод)</option>
-                        <option value="3">3 DIN (36-72 мод)</option>
-                        <option value="4">4 DIN (48-96 мод)</option>
+                    <select id="railCountSelect" onchange="updateShieldConfig()" class="bg-slate-900 text-white font-semibold rounded px-2 py-0.5 border border-slate-600 focus:outline-none">
+                        <option value="1">1 DIN</option>
+                        <option value="2" selected>2 DIN</option>
+                        <option value="3">3 DIN</option>
+                        <option value="4">4 DIN</option>
                     </select>
                 </div>
 
                 <div class="flex items-center space-x-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-                    <label class="text-slate-400 text-xs font-medium">Модулів нарейку:</label>
-                    <select id="railWidthSelect" onchange="updateShieldConfig()" class="bg-slate-900 text-white font-semibold rounded px-2 py-0.5 border border-slate-600 focus:outline-none focus:border-amber-500">
+                    <label class="text-slate-400 text-xs font-medium">Модулів на рейку:</label>
+                    <select id="railWidthSelect" onchange="updateShieldConfig()" class="bg-slate-900 text-white font-semibold rounded px-2 py-0.5 border border-slate-600 focus:outline-none">
                         <option value="12">12 Модулів</option>
                         <option value="18" selected>18 Модулів</option>
                         <option value="24">24 Модулі</option>
@@ -119,148 +115,111 @@
         </div>
     </header>
 
-    <!-- Основний контент (3 колонки) -->
+    <!-- Основний інтерфейс -->
     <div class="flex-1 flex overflow-hidden relative">
 
-        <!-- ЛІВА ПАНЕЛЬ: Каталог компонентів -->
+        <!-- ЛІВА ПАНЕЛЬ: Каталог -->
         <aside class="w-80 bg-white border-r border-slate-200 flex flex-col z-10 shrink-0">
             <div class="p-4 border-b border-slate-200 bg-slate-50">
                 <h2 class="font-bold text-slate-800 flex items-center gap-2">
                     <i data-lucide="layers" class="w-5 h-5 text-amber-500"></i>
                     Каталог обладнання
                 </h2>
-                <p class="text-xs text-slate-500 mt-0.5">Оберіть пристрій для додавання на щит</p>
                 
-                <!-- Таби DC / AC -->
                 <div class="flex mt-3 bg-slate-200 p-1 rounded-lg text-xs font-semibold">
-                    <button id="tabDC" onclick="switchTab('DC')" class="flex-1 py-1.5 rounded-md bg-amber-500 text-white shadow transition">DC (Сонячна сторона)</button>
+                    <button id="tabDC" onclick="switchTab('DC')" class="flex-1 py-1.5 rounded-md bg-amber-500 text-white shadow transition">DC (Сонячні панелі)</button>
                     <button id="tabAC" onclick="switchTab('AC')" class="flex-1 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">AC (Мережа 230/400V)</button>
                 </div>
             </div>
 
-            <div id="catalogList" class="flex-1 overflow-y-auto p-3 space-y-2.5">
-                <!-- Динамічні елементи каталогу -->
-            </div>
+            <div id="catalogList" class="flex-1 overflow-y-auto p-3 space-y-2.5"></div>
         </aside>
 
-        <!-- ЦЕНТРАЛЬНА ПАНЕЛЬ: Візуальний конструктор щита -->
-        <main class="flex-1 bg-slate-200 overflow-y-auto p-6 flex flex-col items-center">
+        <!-- ЦЕНТР: Поле з точечною сіткою -->
+        <main class="flex-1 dot-grid-bg overflow-y-auto p-6 flex flex-col items-center">
             
-            <div class="w-full max-w-5xl bg-white rounded-xl shadow-xl border border-slate-300 overflow-hidden flex flex-col">
+            <div class="w-full max-w-5xl bg-white/90 backdrop-blur rounded-xl shadow-xl border border-slate-300 overflow-hidden flex flex-col">
                 
-                <!-- Шапка корпусу щита -->
                 <div class="bg-slate-800 text-slate-200 px-6 py-3 border-b border-slate-700 flex justify-between items-center">
                     <div class="flex items-center space-x-3">
                         <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
-                        <h3 class="font-bold text-sm tracking-wide uppercase" id="shieldTitle">Розподільчий Щит СЕС</h3>
+                        <h3 class="font-bold text-sm tracking-wide uppercase" id="shieldTitle">Компоновка Щита</h3>
                     </div>
                     <div class="text-xs text-slate-400 font-mono" id="capacityIndicator">
                         Зайнято: 0 / 36 TE
                     </div>
                 </div>
 
-                <!-- Поле з DIN-рейками -->
-                <div id="shieldBody" class="p-8 space-y-10 bg-slate-50 flex-1 min-h-[500px]">
-                    <!-- DIN рейки рендеряться динамічно -->
-                </div>
+                <!-- DIN-рейки -->
+                <div id="shieldBody" class="p-8 space-y-12 bg-slate-50/50 flex-1 min-h-[500px]"></div>
 
-                <!-- Підніжок з підсумком -->
-                <div class="bg-slate-100 border-t border-slate-200 px-6 py-3 flex justify-between items-center text-xs text-slate-600">
-                    <div class="flex items-center space-x-4">
-                        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> DC пристрої</span>
-                        <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> AC пристрої</span>
-                    </div>
-                    <div>Клікніть на пристрій для налаштування його параметрів праворуч</div>
-                </div>
             </div>
 
-            <!-- Таблиця Специфікації (BOM) під щитом -->
+            <!-- Таблиця BOM -->
             <div class="w-full max-w-5xl bg-white rounded-xl shadow-md border border-slate-300 mt-8 p-6">
                 <h3 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
                     <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
-                    Специфікація матеріалів та обладнання (BOM)
+                    Специфікація матеріалів (BOM)
                 </h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs text-slate-600 border-collapse">
                         <thead>
                             <tr class="bg-slate-100 text-slate-700 uppercase font-semibold border-b border-slate-200">
-                                <th class="p-2.5">Позначення</th>
-                                <th class="p-2.5">Найменування пристрою</th>
+                                <th class="p-2.5">Маркування</th>
+                                <th class="p-2.5">Пристрій</th>
                                 <th class="p-2.5">Тип</th>
                                 <th class="p-2.5">Полюси</th>
                                 <th class="p-2.5">Номінал</th>
-                                <th class="p-2.5">Ширина (Модулів)</th>
+                                <th class="p-2.5">Ширина</th>
                                 <th class="p-2.5 text-center">Кількість</th>
                             </tr>
                         </thead>
-                        <tbody id="bomTableBody" class="divide-y divide-slate-200">
-                            <tr>
-                                <td colspan="7" class="p-4 text-center text-slate-400 italic">Щит порожній. Додайте пристрої з каталогу ліворуч.</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="bomTableBody" class="divide-y divide-slate-200"></tbody>
                     </table>
                 </div>
             </div>
 
         </main>
 
-        <!-- ПРАВА ПАНЕЛЬ: Інспектор / Налаштування обраного автомата -->
-        <aside id="inspectorPanel" class="w-80 bg-white border-l border-slate-200 flex flex-col z-10 shrink-0 shadow-2xl transition-all">
-            <div class="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+        <!-- ПРАВА ПАНЕЛЬ: Налаштування -->
+        <aside id="inspectorPanel" class="w-80 bg-white border-l border-slate-200 flex flex-col z-10 shrink-0 shadow-2xl">
+            <div class="p-4 border-b border-slate-200 bg-slate-50">
                 <h2 class="font-bold text-slate-800 flex items-center gap-2">
                     <i data-lucide="sliders" class="w-5 h-5 text-blue-600"></i>
-                    Параметри пристрою
+                    Параметри елемента
                 </h2>
             </div>
-
-            <div id="inspectorContent" class="flex-1 overflow-y-auto p-4 space-y-5">
-                <div class="text-center py-10 text-slate-400 text-sm">
-                    <i data-lucide="mouse-pointer-click" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
-                    Оберіть будь-який автомат або пристрій на DIN-рейці, щоб змінити його струм, кількість полюсів та маркування.
-                </div>
-            </div>
+            <div id="inspectorContent" class="flex-1 overflow-y-auto p-4 space-y-5"></div>
         </aside>
 
     </div>
 
-    <!-- JS Логіка додатку -->
     <script>
-        // База даних доступних компонентів
         const CATALOG = {
             DC: [
-                { id: 'dc_fuse', name: 'Запобіжник DC 1000V', brand: 'ETI / YRO', type: 'DC', poles: 2, current: '16A', char: 'gPV', width: 2, color: 'border-amber-500' },
-                { id: 'dc_spd', name: 'ПЗІП DC (SPD) T2 1000V', brand: 'CHINT / ETI', type: 'DC', poles: 3, current: '20kA', char: 'T2', width: 3, color: 'border-amber-500' },
-                { id: 'dc_mcb', name: 'Автоматичний вимикач DC', brand: 'BENY / ETI', type: 'DC', poles: 2, current: '25A', char: 'C', width: 2, color: 'border-amber-500' },
-                { id: 'dc_switch', name: 'Вимикач навантаження DC', brand: 'SABO / BENY', type: 'DC', poles: 4, current: '32A', char: 'DC-21B', width: 4, color: 'border-amber-500' }
+                { id: 'dc_mcb', name: 'Автоматичний вимикач DC', category: 'mcb', brand: 'BENY / ETI', type: 'DC', poles: 2, current: '25A', char: 'C', width: 2 },
+                { id: 'dc_fuse', name: 'Запобіжник DC 1000V (gPV)', category: 'fuse', brand: 'ETI / YRO', type: 'DC', poles: 2, current: '16A', char: 'gPV', width: 2 },
+                { id: 'dc_spd', name: 'ПЗІП DC (SPD) 1000V', category: 'spd', brand: 'CHINT / ETI', type: 'DC', poles: 2, current: '20kA', char: 'T2', width: 2 }
             ],
             AC: [
-                { id: 'ac_mcb', name: 'Автоматичний вимикач AC', brand: 'CHINT', type: 'AC', poles: 1, current: '16A', char: 'C', width: 1, color: 'border-blue-500' },
-                { id: 'ac_rcbo', name: 'Диференціальний автомат', brand: 'CHINT', type: 'AC', poles: 2, current: '25A', char: 'C', width: 2, color: 'border-blue-500' },
-                { id: 'ac_spd', name: 'ПЗІП AC (SPD) T1+T2 4P', brand: 'ETI', type: 'AC', poles: 4, current: '12.5kA', char: 'T1+T2', width: 4, color: 'border-blue-500' },
-                { id: 'ac_meter', name: 'Smart Meter CHINT DTSU666', brand: 'CHINT', type: 'AC', poles: 4, current: '80A', char: '3-Ph', width: 4, color: 'border-blue-500' },
-                { id: 'ac_relay', name: 'Реле напруги 3-фазне', brand: 'ZUBR / DIGITOP', type: 'AC', poles: 3, current: '40A', char: 'Protect', width: 3, color: 'border-blue-500' }
+                { id: 'ac_mcb_3p', name: 'Автоматичний вимикач 3P', category: 'mcb', brand: 'CHINT', type: 'AC', poles: 3, current: '32A', char: 'C', width: 3 },
+                { id: 'ac_mcb_1p', name: 'Автоматичний вимикач 1P', category: 'mcb', brand: 'CHINT', type: 'AC', poles: 1, current: '16A', char: 'C', width: 1 },
+                { id: 'ac_meter', name: 'Smart Meter 3P (63A)', category: 'meter', brand: 'CHINT', type: 'AC', poles: 4, current: '63A', char: 'LCD', width: 4 },
+                { id: 'ac_spd_4p', name: 'ПЗІП AC (SPD) 4P', category: 'spd', brand: 'ETI', type: 'AC', poles: 4, current: '20kA', char: 'T2', width: 4 }
             ]
         };
 
-        // Конфігурація стану щита
-        let shieldConfig = {
-            railCount: 2,
-            railWidthModules: 18, // 18 модулів по 18мм
-        };
-
-        // Масив розводок на рейках: rails[railIndex] = [ { deviceData }, ... ]
+        let shieldConfig = { railCount: 2, railWidthModules: 18 };
         let railsData = [[], [], [], []];
-        let selectedDeviceId = null; // ID виділеного пристрою
+        let selectedDeviceId = null;
         let activeTab = 'DC';
 
-        // Ініціалізація сторінки
         document.addEventListener('DOMContentLoaded', () => {
             renderCatalog();
             renderShield();
             lucide.createIcons();
         });
 
-        // Перемикання табів DC/AC
         function switchTab(tab) {
             activeTab = tab;
             document.getElementById('tabDC').className = tab === 'DC' 
@@ -272,7 +231,6 @@
             renderCatalog();
         }
 
-        // Рендер каталогу пристроїв
         function renderCatalog() {
             const list = document.getElementById('catalogList');
             list.innerHTML = '';
@@ -289,7 +247,7 @@
                         </div>
                         <div>
                             <div class="font-semibold text-xs text-slate-800 group-hover:text-blue-600 transition">${item.name}</div>
-                            <div class="text-[10px] text-slate-400">${item.brand} • ${item.width} Mod (${item.width * 18}mm)</div>
+                            <div class="text-[10px] text-slate-400">${item.brand} • ${item.width} TE</div>
                         </div>
                     </div>
                     <button class="bg-slate-100 group-hover:bg-blue-600 group-hover:text-white text-slate-600 p-1.5 rounded-md transition">
@@ -301,29 +259,27 @@
             lucide.createIcons();
         }
 
-        // Оновлення параметрів щита з випадаючих списків
         function updateShieldConfig() {
             shieldConfig.railCount = parseInt(document.getElementById('railCountSelect').value);
             shieldConfig.railWidthModules = parseInt(document.getElementById('railWidthSelect').value);
             renderShield();
         }
 
-        // Додавання пристрою на першу вільну DIN-рейку
         function addDeviceToShield(template) {
             const newDevice = {
                 uid: 'dev_' + Date.now() + '_' + Math.floor(Math.random()*1000),
                 name: template.name,
+                category: template.category,
                 brand: template.brand,
                 type: template.type,
                 poles: template.poles,
-                width: template.poles, // 1P = 1 модуль
+                width: template.poles,
                 current: template.current,
                 char: template.char,
                 label: (template.type === 'DC' ? 'QF-DC' : 'QF-AC') + (getDeviceCount() + 1),
                 isOn: true
             };
 
-            // Шукаємо рейку де є місце
             for (let i = 0; i < shieldConfig.railCount; i++) {
                 const currentWidth = railsData[i].reduce((sum, d) => sum + d.width, 0);
                 if (currentWidth + newDevice.width <= shieldConfig.railWidthModules) {
@@ -334,68 +290,68 @@
                     return;
                 }
             }
-            alert('Недостатньо вільного місця на DIN-рейках щита!');
+            alert('Недостатньо місця на DIN-рейці!');
         }
 
-        // Отримати загальну кількість пристроїв
         function getDeviceCount() {
             return railsData.reduce((acc, rail) => acc + rail.length, 0);
         }
 
-        // Рендер всього щита з DIN-рейками
         function renderShield() {
             const shieldBody = document.getElementById('shieldBody');
             shieldBody.innerHTML = '';
 
-            let totalUsedModules = 0;
+            let totalUsed = 0;
             const maxModules = shieldConfig.railCount * shieldConfig.railWidthModules;
 
             for (let r = 0; r < shieldConfig.railCount; r++) {
                 const railDevices = railsData[r];
-                const railUsedModules = railDevices.reduce((sum, d) => sum + d.width, 0);
-                totalUsedModules += railUsedModules;
+                const railUsed = railDevices.reduce((sum, d) => sum + d.width, 0);
+                totalUsed += railUsed;
 
-                // Контейнер DIN-рейки
-                const railWrapper = document.createElement('div');
-                railWrapper.className = 'relative flex flex-col items-center';
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative flex flex-col items-center';
 
-                // Номер рейки
-                const railLabel = document.createElement('div');
-                railLabel.className = 'w-full flex justify-between text-[11px] font-semibold text-slate-400 mb-1 px-1';
-                railLabel.innerHTML = `<span>DIN-рейка #${r+1}</span> <span>${railUsedModules} / ${shieldConfig.railWidthModules} TE</span>`;
-                railWrapper.appendChild(railLabel);
+                const label = document.createElement('div');
+                label.className = 'w-full flex justify-between text-xs font-bold text-slate-600 mb-2 px-1';
+                label.innerHTML = `<span>Рейка ${r+1}</span> <span class="font-mono text-slate-400">${railUsed} / ${shieldConfig.railWidthModules} TE</span>`;
+                wrapper.appendChild(label);
 
-                // Візуальна металева DIN-рейка
+                // Контейнер з перфорованою рейкою
                 const dinRail = document.createElement('div');
-                dinRail.className = 'w-full h-32 din-rail-bg rounded flex items-center px-4 relative justify-start gap-1 overflow-x-auto';
+                dinRail.className = 'w-full h-36 din-rail-perforated rounded-lg flex items-center px-4 relative justify-start gap-0.5 overflow-x-auto';
                 
-                // Рендер пристроїв на цієї рейці
+                // Фонова перфорація (отвори в метал-рейці)
+                const slotsBg = document.createElement('div');
+                slotsBg.className = 'absolute inset-0 flex items-center justify-around pointer-events-none px-6';
+                for(let s=0; s<8; s++) {
+                    slotsBg.innerHTML += `<div class="din-slot"></div>`;
+                }
+                dinRail.appendChild(slotsBg);
+
+                // Отрисовка автоматов
                 railDevices.forEach(dev => {
                     const devEl = createDeviceElement(dev);
                     dinRail.appendChild(devEl);
                 });
 
-                railWrapper.appendChild(dinRail);
-                shieldBody.appendChild(railWrapper);
+                wrapper.appendChild(dinRail);
+                shieldBody.appendChild(wrapper);
             }
 
-            // Оновлення індикатора місткості
-            document.getElementById('capacityIndicator').innerText = `Зайнято: ${totalUsedModules} / ${maxModules} TE`;
-            document.getElementById('shieldTitle').innerText = `Щит СЕС (${shieldConfig.railCount}x${shieldConfig.railWidthModules} Модулів)`;
-
+            document.getElementById('capacityIndicator').innerText = `Зайнято: ${totalUsed} / ${maxModules} TE`;
             renderBOM();
         }
 
-        // Створення реалістичного DOM-елемента автомата
         function createDeviceElement(dev) {
             const isSelected = dev.uid === selectedDeviceId;
-            const unitWidthPx = 42; // Ширина 1P модуля в пікселях
+            const unitWidthPx = 44;
             const devWidthPx = dev.width * unitWidthPx;
 
             const el = document.createElement('div');
-            el.className = `device-body ${isSelected ? 'selected' : ''} rounded flex flex-col justify-between p-1.5 cursor-pointer select-none shrink-0`;
+            el.className = `device-body ${isSelected ? 'selected' : ''} rounded-md flex flex-col justify-between p-1 cursor-pointer select-none shrink-0 relative z-10`;
             el.style.width = `${devWidthPx}px`;
-            el.style.height = `110px`;
+            el.style.height = `124px`;
             el.onclick = (e) => {
                 e.stopPropagation();
                 selectedDeviceId = dev.uid;
@@ -403,73 +359,97 @@
                 renderInspector();
             };
 
-            // Гвинтові клеми зверху
-            let topTerminalsHTML = '<div class="flex justify-around w-full px-1">';
-            for(let p=0; p<dev.poles; p++) {
-                topTerminalsHTML += `<div class="w-3 h-3 terminal-screw rounded-full"></div>`;
-            }
-            topTerminalsHTML += '</div>';
+            // Генерация подписей клемм (+ / - для DC, L1..N..PE для AC)
+            const getTermLabels = () => {
+                if (dev.type === 'DC') return dev.poles === 1 ? ['+'] : ['+', '-'];
+                if (dev.poles === 1) return ['L1'];
+                if (dev.poles === 2) return ['L1', 'N'];
+                if (dev.poles === 3) return ['L1', 'L2', 'L3'];
+                return ['L1', 'L2', 'L3', 'N'];
+            };
 
-            // Гвинтові клеми знизу
-            let bottomTerminalsHTML = '<div class="flex justify-around w-full px-1">';
-            for(let p=0; p<dev.poles; p++) {
-                bottomTerminalsHTML += `<div class="w-3 h-3 terminal-screw rounded-full"></div>`;
-            }
-            bottomTerminalsHTML += '</div>';
+            const topLabels = getTermLabels();
+            const bottomLabels = dev.category === 'spd' ? [...topLabels.slice(0, -1), 'PE'] : topLabels;
 
-            // Колір лінії бренда
-            const brandColor = dev.type === 'DC' ? 'bg-amber-500' : 'bg-blue-600';
+            let topTermHTML = '<div class="flex justify-around w-full px-0.5">';
+            topLabels.forEach(lbl => {
+                topTermHTML += `
+                    <div class="flex flex-col items-center">
+                        <div class="w-3.5 h-3.5 screw-terminal rounded-full"></div>
+                        <span class="text-[7px] font-bold text-slate-400 leading-none mt-0.5">${lbl}</span>
+                    </div>`;
+            });
+            topTermHTML += '</div>';
+
+            let bottomTermHTML = '<div class="flex justify-around w-full px-0.5">';
+            bottomLabels.forEach(lbl => {
+                bottomTermHTML += `
+                    <div class="flex flex-col items-center">
+                        <span class="text-[7px] font-bold text-slate-400 leading-none mb-0.5">${lbl}</span>
+                        <div class="w-3.5 h-3.5 screw-terminal rounded-full"></div>
+                    </div>`;
+            });
+            bottomTermHTML += '</div>';
+
+            // Отрисовка конкретных типов устройств со скриншота
+            let middleHTML = '';
+
+            if (dev.category === 'spd') {
+                // ПЗИП с оранжевыми картриджами T2
+                let cartridgesHTML = '<div class="flex justify-center gap-0.5 w-full my-1">';
+                for(let p=0; p<dev.poles; p++) {
+                    cartridgesHTML += `
+                        <div class="spd-cartridge flex-1 h-12 rounded flex flex-col items-center justify-between p-0.5">
+                            <span class="text-[7px] text-white font-bold tracking-tighter">T2</span>
+                            <div class="w-2.5 h-1 bg-emerald-500 rounded-sm"></div>
+                        </div>`;
+                }
+                cartridgesHTML += '</div>';
+                middleHTML = cartridgesHTML;
+            } else if (dev.category === 'meter') {
+                // Smart Meter с цифровым табло
+                middleHTML = `
+                    <div class="my-1 flex flex-col items-center justify-center w-full px-1">
+                        <div class="w-full bg-slate-900 border border-slate-700 rounded p-1 flex flex-col items-center justify-center shadow-inner">
+                            <span class="font-mono font-extrabold text-amber-400 text-xs tracking-widest">${dev.current}</span>
+                        </div>
+                        <div class="flex gap-1 mt-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                        </div>
+                    </div>`;
+            } else {
+                // Обычный автомат MCB со скрепленными тумблерами
+                let switchesHTML = '<div class="flex justify-around w-full items-center relative my-1.5 px-1">';
+                if (dev.poles > 1) {
+                    switchesHTML += `<div class="absolute top-1/2 left-2 right-2 h-2 toggle-bridge rounded z-10 pointer-events-none"></div>`;
+                }
+                for(let p=0; p<dev.poles; p++) {
+                    switchesHTML += `
+                        <div class="w-3.5 h-6 ${dev.isOn ? 'bg-red-600' : 'bg-slate-700'} rounded-sm border border-slate-900 flex flex-col items-center justify-between p-0.5 shadow">
+                            <span class="text-[6px] font-bold text-white leading-none">${dev.isOn ? 'I' : 'O'}</span>
+                        </div>`;
+                }
+                switchesHTML += '</div>';
+
+                middleHTML = `
+                    ${switchesHTML}
+                    <div class="text-center">
+                        <div class="text-[9px] font-extrabold text-slate-900 leading-none">${dev.char}${dev.current}</div>
+                        <div class="text-[7px] font-mono text-slate-500 border border-slate-300 rounded px-0.5 inline-block mt-0.5">6000</div>
+                    </div>`;
+            }
 
             el.innerHTML = `
-                ${topTerminalsHTML}
-                
-                <!-- Інформаційна панель автомата -->
-                <div class="flex flex-col items-center my-1 text-center">
-                    <div class="w-full ${brandColor} text-white text-[8px] font-bold py-0.5 rounded tracking-tighter uppercase mb-0.5 truncate px-0.5">
-                        ${dev.brand}
-                    </div>
-                    <div class="text-[9px] font-mono font-bold text-slate-800 leading-none">
-                        ${dev.label}
-                    </div>
-                    <div class="text-[10px] font-extrabold text-slate-900 mt-0.5">
-                        ${dev.char}${dev.current}
-                    </div>
-                    <div class="text-[7px] text-slate-400 font-semibold">
-                        ${dev.type} ${dev.poles}P
-                    </div>
-                </div>
-
-                <!-- Важіль вимикача (Тумблер) -->
-                <div class="flex justify-center my-1" onclick="toggleDeviceState(event, '${dev.uid}')">
-                    <div class="w-6 h-7 rounded ${dev.isOn ? 'toggle-switch-on' : 'toggle-switch-off'} flex flex-col justify-center items-center cursor-pointer transition">
-                        <div class="w-4 h-1 bg-white/40 rounded-full"></div>
-                    </div>
-                </div>
-
-                <!-- Нижні динамічні клеми та затискач DIN-рейки -->
-                <div class="flex flex-col items-center">
-                    ${bottomTerminalsHTML}
-                    <div class="w-5 h-1.5 din-clip mt-1"></div>
-                </div>
+                ${topTermHTML}
+                ${middleHTML}
+                ${bottomTermHTML}
             `;
 
             return el;
         }
 
-        // Увімкнути/Вимкнути автомат при кліку на тумблер
-        function toggleDeviceState(e, uid) {
-            e.stopPropagation();
-            for (let r = 0; r < shieldConfig.railCount; r++) {
-                const dev = railsData[r].find(d => d.uid === uid);
-                if (dev) {
-                    dev.isOn = !dev.isOn;
-                    renderShield();
-                    return;
-                }
-            }
-        }
-
-        // Знайти автомат за ID
         function getSelectedDevice() {
             if (!selectedDeviceId) return null;
             for (let r = 0; r < shieldConfig.railCount; r++) {
@@ -479,105 +459,65 @@
             return null;
         }
 
-        // Рендер правої панелі інспектора
         function renderInspector() {
             const panel = document.getElementById('inspectorContent');
             const dev = getSelectedDevice();
 
             if (!dev) {
-                panel.innerHTML = `
-                    <div class="text-center py-10 text-slate-400 text-sm">
-                        <i data-lucide="mouse-pointer-click" class="w-10 h-10 mx-auto mb-2 text-slate-300"></i>
-                        Оберіть пристрій на DIN-рейці для змінення налаштувань.
-                    </div>
-                `;
-                lucide.createIcons();
+                panel.innerHTML = `<div class="text-center py-10 text-slate-400 text-sm">Оберіть пристрій для налаштування</div>`;
                 return;
+            }
+
+            const maxPolesAllowed = dev.type === 'DC' ? 2 : 4;
+            let polesButtons = '';
+            for(let p=1; p<=maxPolesAllowed; p++) {
+                polesButtons += `
+                    <button onclick="updateDeviceParam('poles', ${p})" 
+                        class="py-1.5 font-bold rounded border ${dev.poles === p ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-100 text-slate-700 border-slate-300'}">
+                        ${p}P
+                    </button>`;
             }
 
             panel.innerHTML = `
                 <div class="space-y-4 text-xs">
-                    
-                    <!-- Маркування -->
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Позначення на схемах (Label):</label>
-                        <input type="text" value="${dev.label}" onchange="updateDeviceParam('label', this.value)" 
-                            class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 text-sm font-semibold text-slate-800 focus:outline-none focus:border-blue-500">
+                        <label class="block font-semibold text-slate-700 mb-1">Маркування на схемі:</label>
+                        <input type="text" value="${dev.label}" onchange="updateDeviceParam('label', this.value)" class="w-full border rounded px-2 py-1.5 font-semibold">
                     </div>
 
-                    <!-- Полюси (Зміна ширини) -->
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Кількість полюсів (Ширина):</label>
-                        <div class="grid grid-cols-4 gap-1.5">
-                            ${[1, 2, 3, 4].map(p => `
-                                <button onclick="updateDeviceParam('poles', ${p})" 
-                                    class="py-1.5 font-bold rounded border ${dev.poles === p ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200'}">
-                                    ${p}P
-                                </button>
-                            `).join('')}
+                        <label class="block font-semibold text-slate-700 mb-1">Кількість полюсів (Макс ${maxPolesAllowed}P):</label>
+                        <div class="grid grid-cols-${maxPolesAllowed} gap-1">
+                            ${polesButtons}
                         </div>
                     </div>
 
-                    <!-- Номінальний струм -->
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Номінальний струм (In):</label>
-                        <select onchange="updateDeviceParam('current', this.value)" 
-                            class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 font-semibold text-slate-800 focus:outline-none focus:border-blue-500">
-                            ${['6A', '10A', '16A', '20A', '25A', '32A', '40A', '50A', '63A', '80A', '100A'].map(c => `
-                                <option value="${c}" ${dev.current === c ? 'selected' : ''}>${c}</option>
-                            `).join('')}
+                        <label class="block font-semibold text-slate-700 mb-1">Номінальний струм:</label>
+                        <select onchange="updateDeviceParam('current', this.value)" class="w-full border rounded px-2 py-1.5 font-semibold">
+                            ${['6A', '10A', '16A', '20A', '25A', '32A', '40A', '50A', '63A'].map(c => `<option value="${c}" ${dev.current === c ? 'selected' : ''}>${c}</option>`).join('')}
                         </select>
                     </div>
 
-                    <!-- Характеристика розчеплення -->
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Характеристика / Тип:</label>
-                        <select onchange="updateDeviceParam('char', this.value)" 
-                            class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 font-semibold text-slate-800 focus:outline-none focus:border-blue-500">
-                            ${['B', 'C', 'D', 'gPV', 'T1+T2', 'T2', 'AC', 'A'].map(ch => `
-                                <option value="${ch}" ${dev.char === ch ? 'selected' : ''}>${ch}</option>
-                            `).join('')}
-                        </select>
+                    <div class="pt-4 flex space-x-2">
+                        <button onclick="deleteDevice('${dev.uid}')" class="w-full bg-red-50 text-red-600 font-medium py-2 rounded border border-red-200">Видалити пристрій</button>
                     </div>
-
-                    <!-- Виробник / Бренд -->
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Бренд / Виробник:</label>
-                        <input type="text" value="${dev.brand}" onchange="updateDeviceParam('brand', this.value)" 
-                            class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 text-slate-800 focus:outline-none focus:border-blue-500">
-                    </div>
-
-                    <hr class="border-slate-200 my-4">
-
-                    <!-- Кнопки дій -->
-                    <div class="flex space-x-2 pt-2">
-                        <button onclick="duplicateDevice('${dev.uid}')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 rounded-lg flex items-center justify-center gap-1.5 border border-slate-300 transition">
-                            <i data-lucide="copy" class="w-4 h-4"></i> Дублювати
-                        </button>
-                        <button onclick="deleteDevice('${dev.uid}')" class="bg-red-50 hover:bg-red-100 text-red-600 font-medium py-2 px-3 rounded-lg flex items-center justify-center gap-1 border border-red-200 transition">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i> Видалити
-                        </button>
-                    </div>
-
                 </div>
             `;
-            lucide.createIcons();
         }
 
-        // Оновлення параметра обраного пристрою
         function updateDeviceParam(param, value) {
             const dev = getSelectedDevice();
             if (!dev) return;
 
             if (param === 'poles') {
                 const newWidth = parseInt(value);
-                // Перевірка чи поміститься нова ширина на рейці
                 for (let r = 0; r < shieldConfig.railCount; r++) {
                     const idx = railsData[r].findIndex(d => d.uid === dev.uid);
                     if (idx !== -1) {
                         const currentWidthWithoutDev = railsData[r].reduce((sum, d) => sum + (d.uid === dev.uid ? 0 : d.width), 0);
                         if (currentWidthWithoutDev + newWidth > shieldConfig.railWidthModules) {
-                            alert('Немає достатньо місця на DIN-рейці для збільшення кількості полюсів!');
+                            alert('Немає місця на рейці!');
                             return;
                         }
                         dev.poles = newWidth;
@@ -593,15 +533,6 @@
             renderInspector();
         }
 
-        // Дублювання пристрою
-        function duplicateDevice(uid) {
-            const dev = getSelectedDevice();
-            if (dev) {
-                addDeviceToShield({ ...dev, name: dev.name });
-            }
-        }
-
-        // Видалення пристрою з щита
         function deleteDevice(uid) {
             for (let r = 0; r < shieldConfig.railCount; r++) {
                 const idx = railsData[r].findIndex(d => d.uid === uid);
@@ -615,64 +546,45 @@
             }
         }
 
-        // Рендер таблиці специфікації (BOM)
         function renderBOM() {
             const tbody = document.getElementById('bomTableBody');
             tbody.innerHTML = '';
-
             let allDevices = [];
             railsData.forEach(rail => allDevices.push(...rail));
 
             if (allDevices.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Щит порожній. Додайте пристрої з каталогу ліворуч.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-slate-400 italic">Щит порожній</td></tr>`;
                 return;
             }
 
-            // Групування однакових пристроїв
-            const grouped = {};
             allDevices.forEach(d => {
-                const key = `${d.name}_${d.brand}_${d.poles}P_${d.char}${d.current}`;
-                if (!grouped[key]) {
-                    grouped[key] = { ...d, count: 0, labels: [] };
-                }
-                grouped[key].count++;
-                grouped[key].labels.push(d.label);
-            });
-
-            Object.values(grouped).forEach(item => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50 transition';
                 tr.innerHTML = `
-                    <td class="p-2.5 font-mono font-bold text-blue-600">${item.labels.join(', ')}</td>
-                    <td class="p-2.5 font-medium text-slate-800">${item.name} (${item.brand})</td>
-                    <td class="p-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${item.type === 'DC' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}">${item.type}</span></td>
-                    <td class="p-2.5">${item.poles}P</td>
-                    <td class="p-2.5 font-semibold text-slate-900">${item.char}${item.current}</td>
-                    <td class="p-2.5">${item.width} TE (${item.width * 18}мм)</td>
-                    <td class="p-2.5 text-center font-bold text-slate-800">${item.count} шт</td>
+                    <td class="p-2.5 font-bold text-blue-600">${d.label}</td>
+                    <td class="p-2.5">${d.name} (${d.brand})</td>
+                    <td class="p-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${d.type === 'DC' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}">${d.type}</span></td>
+                    <td class="p-2.5">${d.poles}P</td>
+                    <td class="p-2.5 font-bold">${d.char}${d.current}</td>
+                    <td class="p-2.5">${d.width} TE</td>
+                    <td class="p-2.5 text-center font-bold">1 шт</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Експорт специфікації у форматі CSV (Excel)
         function exportBOMCSV() {
             let allDevices = [];
             railsData.forEach(rail => allDevices.push(...rail));
-            if (allDevices.length === 0) {
-                alert('Щит порожній! Додайте пристрої для експорту.');
-                return;
-            }
+            if (allDevices.length === 0) return alert('Щит порожній!');
 
-            let csvContent = "data:text/csv;charset=utf-8,Позначення;Найменування;Виробник;Тип;Полюси;Номінал;Ширина (TE)\n";
+            let csvContent = "data:text/csv;charset=utf-8,Маркування;Найменування;Виробник;Тип;Полюси;Номінал\n";
             allDevices.forEach(d => {
-                csvContent += `${d.label};"${d.name}";${d.brand};${d.type};${d.poles}P;${d.char}${d.current};${d.width}\n`;
+                csvContent += `${d.label};"${d.name}";${d.brand};${d.type};${d.poles}P;${d.char}${d.current}\n`;
             });
 
-            const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Специфікація_Щита_СЕС_${Date.now()}.csv`);
+            link.setAttribute("href", encodeURI(csvContent));
+            link.setAttribute("download", `Специфікація_${Date.now()}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
